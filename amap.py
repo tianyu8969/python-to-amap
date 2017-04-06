@@ -1,5 +1,6 @@
 ﻿# 高德地图：http://ditu.amap.com/  高德地图poi：http://lbs.amap.com/api/webservice/guide/api/search/#text
 # coding:utf-8
+# github:https://github.com/tianyu8969/python-to-amap
 
 import json
 import xlwt
