@@ -77,7 +77,7 @@ def write_data_to_excel(name):
     for index, hkey in enumerate(hkeys):
         sheet.write(0, index, hkey)
 
-    # 遍历result中的没个元素。
+    # 遍历result中的每个元素。
     for i in range(len(result)):
         values = result[i]
         n = i + 1
