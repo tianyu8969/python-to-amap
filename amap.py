@@ -1,4 +1,4 @@
-﻿# 高德地图：http://ditu.amap.com/  高德地图poi：http://lbs.amap.com/api/webservice/guide/api/search/#text
+# 高德地图：http://ditu.amap.com/  高德地图poi：http://lbs.amap.com/api/webservice/guide/api/search/#text
 # coding:utf-8
 # github:https://github.com/tianyu8969/python-to-amap
 
@@ -19,8 +19,8 @@ today_date = datetime.date(today)
 json_name = 'data_amap.json'
 # 高德地图poi：http://lbs.amap.com/api/webservice/guide/api/search/#text
 # 请替换为自己申请的key值：申请Web服务API类型KEY http://lbs.amap.com/dev/
-url_amap = 'http://restapi.amap.com/v3/place/text?key=6159ef91602ee2dbd718fc7c30601397&keywords=卫生服务中心&types=090000&city=上海&citylimit=true&children=1&offset=40&page=pagesize&extensions=all'
-each_page_rec = 40  # 每页条数，最大49条
+url_amap = 'http://restapi.amap.com/v3/place/text?key=6159ef91602ee2dbd718fc7c30601397&keywords=卫生服务中心&types=090000&city=上海&citylimit=true&children=1&offset=20&page=pageindex&extensions=all'
+each_page_rec = 20  # 每页记录数据，强烈建议不超过25，若超过25可能造成访问报错
 which_pach = r'page=1'  # 显示页码
 global total_record  # 定义全局变量，总行数
 # Excel表头
@@ -37,10 +37,10 @@ def log2file(file_handle, text_info):
 
 
 # 获取数据
-def get_data(pagesize):
+def get_data(pageindex):
     global total_record
-    print('解析页码： ' + str(pagesize) + ' ... ...')
-    url = url_amap.replace('pagesize', str(pagesize))
+    print('解析页码： ' + str(pageindex) + ' ... ...')
+    url = url_amap.replace('pageindex', str(pageindex))
     # 中文编码
     url = quote(url, safe='/:?&=')
     page = urlopen(url)
