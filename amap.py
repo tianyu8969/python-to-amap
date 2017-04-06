@@ -18,6 +18,7 @@ today_date = datetime.date(today)
 
 json_name = 'data_amap.json'
 # 高德地图poi：http://lbs.amap.com/api/webservice/guide/api/search/#text
+# 请替换为自己申请的key值：申请Web服务API类型KEY http://lbs.amap.com/dev/
 url_amap = 'http://restapi.amap.com/v3/place/text?key=6159ef91602ee2dbd718fc7c30601397&keywords=卫生服务中心&types=090000&city=上海&citylimit=true&children=1&offset=40&page=pagesize&extensions=all'
 each_page_rec = 40  # 每页条数，最大49条
 which_pach = r'page=1'  # 显示页码
