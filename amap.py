@@ -30,12 +30,7 @@ hkeys = ['id', '行业类型', '医院名称', '医院类型', '医院地址', '
 bkeys = ['id', 'biz_type', 'name', 'type', 'address', 'tel', 'location', 'pcode', 'pname', 'citycode', 'cityname',
          'adcode', 'adname', 'business_area']
 
-
-# write logs
-def log2file(file_handle, text_info):
-    file_handle.write(text_info)
-
-
+ 
 # 获取数据
 def get_data(pageindex):
     global total_record
