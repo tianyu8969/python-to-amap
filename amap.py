@@ -5,11 +5,10 @@
 import json
 import xlwt
 from datetime import datetime
-from urllib.request import urlopen
+from urllib import request
 from urllib.parse import quote
-import xml.dom.minidom as minidom
-import string
 import sys
+import time
 
 # 获取当前日期
 today = datetime.today()
@@ -19,10 +18,11 @@ today_date = datetime.date(today)
 json_name = 'data_amap.json'
 # 高德地图poi：http://lbs.amap.com/api/webservice/guide/api/search/#text
 # 请替换为自己申请的key值：申请Web服务API类型KEY http://lbs.amap.com/dev/
+# 090000医疗
 url_amap = 'http://restapi.amap.com/v3/place/text?key=6159ef91602ee2dbd718fc7c30601397&keywords=卫生服务中心&types=090000&city=上海&citylimit=true&children=1&offset=20&page=pageindex&extensions=all'
 page_size = 20  # 每页记录数据，强烈建议不超过25，若超过25可能造成访问报错
 page_index = r'page=1'  # 显示页码
-global total_record  # 定义全局变量，总行数
+total_record = 0  # 定义全局变量，总行数
 # Excel表头
 hkeys = ['id', '行业类型', '医院名称', '医院类型', '医院地址', '联系电话', 'location', '省份代码', '省份名称', '城市代码', '城市名称', '区域代码', '区域名称',
          '所在商圈']
@@ -30,18 +30,22 @@ hkeys = ['id', '行业类型', '医院名称', '医院类型', '医院地址', '
 bkeys = ['id', 'biz_type', 'name', 'type', 'address', 'tel', 'location', 'pcode', 'pname', 'citycode', 'cityname',
          'adcode', 'adname', 'business_area']
 
- 
+
 # 获取数据
 def get_data(pageindex):
     global total_record
+    # 暂停500毫秒，防止过快取不到数据
+    time.sleep(0.5)
     print('解析页码： ' + str(pageindex) + ' ... ...')
     url = url_amap.replace('pageindex', str(pageindex))
     # 中文编码
     url = quote(url, safe='/:?&=')
-    page = urlopen(url)
-    html = page.read()
+    html = ""
+    with request.urlopen(url) as f:
+        html = f.read()
     rr = json.loads(html)
-    total_record = int(rr["count"])
+    if total_record == 0:
+        total_record = int(rr['count'])
     return rr['pois']
 
 
@@ -54,12 +58,17 @@ def getPOIdata():
     else:
         page_number = int(total_record / page_size) + 1
 
-    for each_page in range(2, page_number):
-        josn_data.extend(get_data(each_page))
-    print('获取POI数据结束')
     with open(json_name, 'w') as f:
-        f.write(json.dumps(josn_data))
-        print('保存到json文件：' + json_name)
+        # 去除最后]
+        f.write(json.dumps(josn_data).rstrip(']'))
+        for each_page in range(2, page_number):
+            html = json.dumps(get_data(each_page)).lstrip('[').rstrip(']')
+            if html:
+                html = "," + html
+            f.write(html)
+            print('已保存到json文件：' + json_name)
+        f.write(']')
+    print('获取POI数据结束')
 
 
 # 写入数据到excel
@@ -77,7 +86,7 @@ def write_data_to_excel(name):
     for index, hkey in enumerate(hkeys):
         sheet.write(0, index, hkey)
 
-    # 遍历result中的每个元素。
+    # 遍历result中的没个元素。
     for i in range(len(result)):
         values = result[i]
         n = i + 1
